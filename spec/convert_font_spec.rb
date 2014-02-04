@@ -26,6 +26,6 @@ describe ConvertFont::Converter do
   end
 
   it "should make a successful post to an api" do
-    converter.convert(File.dirname(__FILE__) + "/convert_font/SourceSansPro-Regular.otf", [:ttf, :woff, :eot]) 
+    converter.convert(File.dirname(__FILE__) + "/convert_font/SourceSansPro-Regular.otf", [:ttf, :woff, :eot], "/home/jonlunsford/Downloads") 
   end
 end

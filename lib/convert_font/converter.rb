@@ -19,12 +19,13 @@ module ConvertFont
     end
 
     def convert file, types, destination
-      response = Unirest.post @api_url, parameters: {"file" => File.new(file, "rb"), "format" => types[0]}
-
+      puts types[0].to_s
+      response = Unirest.post @api_url, parameters: {"file" => File.new(file, "rb"), "format" => types[0].to_s}
+      
       open("temp_font.tar.gz", "w") do |temp_file|
         temp_file.write(response.body)
       end
-
+      
       extract("temp_font.tar.gz", destination);
     end
 
@@ -42,7 +43,7 @@ module ConvertFont
         end
       end
       tar.close
-      FileUtils.rm_rf 
+      # FileUtils.rm_rf file
     end
 
   end
