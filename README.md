@@ -18,7 +18,7 @@ Or install it yourself as:
 
 ## Usage
 
-#### This Gem is actively under development, and is not ready for production.
+### This Gem is actively under development, it is not ready for production.
 
 ## Contributing
 
