@@ -18,7 +18,7 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+#### This Gem is actively under development, and is not ready for production.
 
 ## Contributing
 
