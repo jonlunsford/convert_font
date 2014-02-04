@@ -18,26 +18,31 @@ module ConvertFont
       Unirest.default_header('X-Mashape-Authorization', @api_key)
     end
 
-    def convert file, types
+    def convert file, types, destination
       response = Unirest.post @api_url, parameters: {"file" => File.new(file, "rb"), "format" => types[0]}
 
-      open("temp_file.tar.gz", "w") do |temp_file|
+      open("temp_font.tar.gz", "w") do |temp_file|
         temp_file.write(response.body)
       end
 
-      extract = Gem::Package::TarReader.new(Zlib::GzipReader.open("temp_file.tar.gz"))
-      extract.rewind
-      extract.each do |entry|
+      extract("temp_font.tar.gz", destination);
+    end
+
+    def extract file, destination
+      tar = Gem::Package::TarReader.new(Zlib::GzipReader.open(file))
+      tar.rewind
+      tar.each do |entry|
         if entry.file?
           names = entry.full_name.split("/")
           unless names.last.include? ".txt"
-            open(names.last, "w") do |new_file|
+            open(destination + names.last, "wb") do |new_file|
               new_file.write(entry.read)
             end 
           end
         end
       end
-      extract.close
+      tar.close
+      FileUtils.rm_rf 
     end
 
   end
