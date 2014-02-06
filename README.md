@@ -1,6 +1,6 @@
 # ConvertFont
 
-A ClI tool to convert fonts.
+A CLI tool to convert fonts.
 
 ## Installation
 
@@ -20,15 +20,15 @@ Convert the font at `/home/myproject/my_font_file.ttf` to the formats eot, woff,
 
 Convert the font at `/home/myproject/my_font_file.ttf` to the formats eot, woff, and svg. The converted fonts will be placed in `/home/Downloads/`. The downloaded .tar.gz files will NOT be cleaned up.
 
-The `convert` command tells `convert_font` to.... convert a font (redundant, I know).
+`convert` tells `convert_font` to.... convert a font (redundant, I know).
 
-The `-i` option is the input file, it must be an absolute path to your font file, ex. `-i /home/myproject/my_font_file.ttf`.
+`-i` is the absolute path to your font file, ex. `-i /home/myproject/my_font_file.ttf`.
 
-The `-f` option is a comma separated list of formats, ex. `-f eot,woff,svg`.
+`-f` is a comma separated list of formats, ex. `-f eot,woff,svg`.
 
-The `-d` option is the destination of the converted fonts, if ommited the current working directory is used, ex. `-d /home/Downloads/`.
+`-d` is the destination of the converted fonts, if ommited the current working directory is used, ex. `-d /home/Downloads/`.
 
-The `-c` option is a flag to NOT clean up the downloaded .tar.gz files, they are deleted by default after they are processed, ex. '-c false'
+`-c` is a flag to NOT clean up the downloaded .tar.gz files, ex. `-c false`
 
 ## Changelog
 
