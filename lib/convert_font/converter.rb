@@ -5,11 +5,12 @@ require 'unirest'
 module ConvertFont
   class Converter
 
-    attr_accessor :api_key, :api_url
+    attr_accessor :api_key, :api_url, :enable_cleanup
 
-    def initialize api_key, api_url
+    def initialize api_key, api_url, enable_cleanup = true
       @api_key = api_key
       @api_url = api_url
+      @enable_cleanup = enable_cleanup
 
       self.set_default_request_headers
     end
@@ -19,17 +20,22 @@ module ConvertFont
     end
 
     def convert file, types, destination
-      puts types[0].to_s
-      response = Unirest.post @api_url, parameters: {"file" => File.new(file, "rb"), "format" => types[0].to_s}
       
-      open("temp_font.tar.gz", "w") do |temp_file|
-        temp_file.write(response.body)
+      types.to_enum.with_index(0).each do |type, i|
+        response = Unirest.post @api_url, parameters: {"file" => File.new(file, "rb"), "format" => type.to_s}
+        
+        open("temp_font_#{type.to_s}.tar.gz", "w") do |temp_file|
+          temp_file.write(response.body)
+        end
+        
+        extract("temp_font_#{type.to_s}.tar.gz", destination);
       end
       
-      extract("temp_font.tar.gz", destination);
+      
     end
 
     def extract file, destination
+      destination << "/" if destination[-1] != "/"
       tar = Gem::Package::TarReader.new(Zlib::GzipReader.open(file))
       tar.rewind
       tar.each do |entry|
@@ -43,7 +49,7 @@ module ConvertFont
         end
       end
       tar.close
-      # FileUtils.rm_rf file
+      FileUtils.rm_rf file if @enable_cleanup
     end
 
   end
