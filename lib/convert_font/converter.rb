@@ -20,18 +20,16 @@ module ConvertFont
     end
 
     def convert file, types, destination
-      
+      destination << "/" if destination[-1] != "/"
       types.to_enum.with_index(0).each do |type, i|
+        puts "Now converting: #{type}"
         response = Unirest.post @api_url, parameters: {"file" => File.new(file, "rb"), "format" => type.to_s}
-        
-        open("temp_font_#{type.to_s}.tar.gz", "w") do |temp_file|
+        open("#{destination}temp_font_#{type.to_s}.tar.gz", "w") do |temp_file|
           temp_file.write(response.body)
         end
-        
-        extract("temp_font_#{type.to_s}.tar.gz", destination);
+        extract("#{destination}temp_font_#{type.to_s}.tar.gz", destination);
+        puts "#{type} converted."
       end
-      
-      
     end
 
     def extract file, destination

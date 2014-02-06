@@ -2,36 +2,54 @@
 $:.unshift File.join File.dirname(__FILE__), "..", "lib"
 require "rubygems"
 require "convert_font"
-require "yaml"
 require "optparse"
 
 options = {}
 
 opt_parser = OptionParser.new do |opt|
-  opt.banner = "Usage: convert_font [OPTIONS]"
+  opt.banner = "Usage: convert_font [command] [OPTIONS]"
   opt.separator ""
   opt.separator "Commands"
-  opt.separator "    convert: Convert a font."
+  opt.separator "    convert: convert a font."
   opt.separator ""
   opt.separator "Options"
 
-  opt.on("-i", "--input_file Font File", "The absolute path to the font file you would like to convert, ex. '/home/users/my_font_file.ttf'") do |font_file|
+  opt.on("-i", "--input_file FILE", "The absolute path to the font file you would like to convert, ex. /home/users/my_font_file.ttf") do |font_file|
     options[:font_file] = font_file
   end
 
-  opt.on("-f", "--format Conversion Formats", "Each file format you would your font converted to separated by spase, ex. ttf eot woff svg") do |format|
-    options[:formats] = format
+  opt.on("-f", "--formats=format[,...]", "Each file format you would your font converted to separated by a comma, ex. ttf,eot,woff,svg") do |format|
+    input_formats = format.split(",")
+    options[:formats] = input_formats.map { |s| s.to_sym }
   end
 
-  opt.on("-d", "--destination", "Absolute path to where the converted files will go. If omitted the current directory will be used.") do |destination|
+  opt.on("-d", "--destination DESTINATION", "Absolute path to where the converted files will go. If omitted the current directory will be used.") do |destination|
     options[:destination] = destination
   end
 
-  opt.ong("-c", "cleanup", "If you DON'T want the downloaded .tar.gz files to be cleaned up, they will be removed my default") do |cleanup|
+  opt.on("-c", "--cleanup CLEANUP", "If you DON'T want the downloaded .tar.gz files to be cleaned up, ex. -c false") do |cleanup|
     options[:cleanup] = cleanup
   end
 end
 
 opt_parser.parse!
 
-puts opt_parser unless ARGV[0]
+if ARGV[0]
+  KEY = "qzinxBQILDuGzIlmz13HK7svAw6z8uu5"
+  END_POINT = "https://ofc.p.mashape.com/directConvert/"
+
+  cleanup = options[:cleanup] ? false : true
+  destination = options[:destination] ? options[:destination] : Dir.pwd
+
+  converter = ConvertFont::Converter.new KEY, END_POINT, cleanup
+
+  if !File.file?(options[:font_file])
+    puts "It appears the path to your font file is incorrect. 'convert_font --help'"
+  elsif options[:formats].nil? || options[:formats].count <= 0
+    puts "Please provide at least one format to convert to. 'convert_font --help'"
+  else
+    converter.convert(options[:font_file], options[:formats], destination)
+  end
+else
+  puts opt_parser
+end
